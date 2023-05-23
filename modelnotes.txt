@@ -1,0 +1,78 @@
+Since a bad data model will make our apps buggy and error-prone, we want to pre plan our DM so we can setup state changes and the ability to add new features.
+Our board is a grid of 9 squares. Each square will display an X or an O. We can safely use a 1-d array bc it will always only go up to 9 squares.
+Every time a player makes a move, this will alter the state of the board
+Each move (which we will keep track of in state with history) is like a Polaroid of what the board looked like with the move.
+History is a collection of ordered steps, we can use an array to store our bunch of boards, with each being a Polaroid
+Like this:
+[
+  [null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, "X", null, null, null, null],
+  [null, null, "O", null, "X", null, null, null, null],
+]
+Each sub-array in the arr is a move happening
+
+To keep track of which move we are on, use a num to rep the current move's index. Use this num to get the current board state from our history array
+This also lets us get the status message to display which player's turn it is.
+We want to set up state in Game. It is our highest component in the hierarchy
+Look at game and see the two state variables that I set
+currentMove, in the state vars, is an example of derived state! 
+
+We want for the status message of which player should go and the squares on the board to be interactive
+Make them interactive with the state vars made in Game
+
+We can update the return val of Game to pass the xIsNext and currentSquares to the Board element.
+Like this:
+<Board xIsNext={xIsNext} squares={currentSquares} />
+
+When we do that, we can now access these vals in Board through props.xIsNext and props.currentSquares
+
+Now we can render the correct user's turn with a dynamic message in Board based on the passed prop vals
+ const status = `Next player: ${xIsNext ? "X" : "O"}`;
+
+We want for our squares to show the correct val that the users enter for them, so in the Square func in Board, we can grab the vals with props.val
+
+function Square({ value }) {
+  return (
+    <View style={styles.square}>
+      <Text style={styles.squareText}>{value}</Text>
+    </View>
+  );
+}
+
+We need for our squares to be pressable so we handle the onPress event. When we do this, we need to update the state in Game to reflect the new move
+
+An INTERFACE in SE is like a remote control. It gives us buttons to do things with. We can give our remote to other people, so that they can control the device too. We can also create interfaces in Reacat that operate on state vals in a top-level component. 
+When we pass the interface to child components, we give the child the ability to control state values.
+
+In Game, we need to add the below handlePlay func to handle all of the state changes that can happen after someone makes a play:
+
+
+
+
+  function handlePlay(nextSquares) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+
+handlePlay will take in the next set of squares to be added to the history of moves. We want to allow our users to jump to different parts of the history, so we can't just append nextSquares to history, We can use slice to insert nextSquares after history[currentMove]. Then we can use setHistory and setCurrentMove to update the state vsrs.
+
+pass handlePlay to Board as a prop called onPlay
+
+
+Handle presses in Board¶
+Now, we’ll update Board to handle presses on individual squares:
+
+Create a function named handlePress in Board that takes in the index of the square that was pressed. The function should:
+
+Use the index to build a new array of squares based on props.squares
+
+Call onPlay with the new squares as an argument
+
+Pass handlePress to each Square component as a prop called onSquarePress
+
+Hint: you’ll need to wrap handlePress in an anonymous function to pass it to onSquarePress to preserve the index value (ex.: () => handlePress(0))
+
+Make Square pressable
+Make Square pressable by wrapping it in a Pressable component (remember to import Pressable from react-native first). Then, pass props.onSquarePress to the onPress prop.
