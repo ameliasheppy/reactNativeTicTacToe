@@ -14,17 +14,21 @@ function Square({value, onSquarePress}) {
 
   export default function Board({xIsNext, squares, onPlay}) {
     const status = `Next player: ${xIsNext ? "X" : "O"}`
-
+    const end = `Done! Congrats: `
     function handlePress(i) {
         const nextSquares = squares.slice();
         nextSquares[i] = xIsNext ? "X" : "O";
-    
         onPlay(nextSquares);
       }
+
+    function whoWon(squares){
+        
+    }
 
     return (
       <>
         <Text style={styles.statusStyles}>{status}</Text>
+        <Text style={styles.statusStyles}>{end}</Text>
         <View style={styles.scootOver}>
           <Square value={squares[0]}  onSquarePress={() => handlePress(0)}/>
           <Square value={squares[1]}  onSquarePress={() => handlePress(1)}/>

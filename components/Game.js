@@ -8,14 +8,20 @@ import Move from "./Move";
 export default function Game() {
     const [history, setHistory] = useState([Array(9).fill(null)])
     const [currentMove, setCurrentMove] = useState(0)
+    const [borderColor, setBorderColor] = useState('black')
 
     const xIsNext = currentMove % 2 === 0;
     const currentSquares = history[currentMove];
-    console.log(currentSquares, "current squares")
-
+ 
+    console.log(currentSquares, "i am current squares")
+    console.log()
     function handlePlay(nextSquares) {
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
         console.log(currentMove, "I am current move")
+        if(currentMove===8){
+            console.log("end!")
+            setBorderColor('magenta')
+        }
         console.log(nextHistory, "i am next history")
         console.log(history, "i am history")
         setHistory(nextHistory);
@@ -25,12 +31,14 @@ export default function Game() {
 
     return (
       <>
-        <View style={styles.boardContainer}>
+
+        <View style={[styles.boardContainer, {borderColor}]}>
           <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}/>
         </View>
         <ScrollView style={styles.movesContainer}>
           <Move  style={styles.movesContainerContent}/>
         </ScrollView>
+
       </>
     );
   }
@@ -41,8 +49,7 @@ export default function Game() {
         display:'50%',
         alignItems:"center",
         justifyContent:"center",
-        borderColor:'grey',
-        borderWidth:1,
+        borderWidth:4,
         padding:20,
     },
     movesContainer: {
